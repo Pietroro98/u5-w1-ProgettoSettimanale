@@ -41,12 +41,20 @@ public class PrenotazioneRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         // ------------EDIFICIO-------------------------
-        Edificio edificio = new Edificio();  //nel db ci sono 2 edifici..
-        edificio.setNome("Mediolanum Forum");
-        edificio.setIndirizzo("G. di vittorio");
-        edificio.setCitta("Assago");
+//        Edificio edificio = new Edificio();  //nel db ci sono 2 edifici..
+//        edificio.setNome("Mediolanum Forum");
+//        edificio.setIndirizzo("G. di vittorio");
+//        edificio.setCitta("Assago");
 
-        Edificio savedEdificio = edificioService.save(edificio);
+//        Edificio savedEdificio = edificioService.save(edificio);
+
+                // -----------UTENTE----------------------
+//        Utente utente = new Utente();
+//        utente.setUsername("MrDoris");
+//        utente.setNomeCompleto("Ennio Doris");
+//        utente.setEmail("ennio.doris@example.com");
+//        utenteService.save(utente);
+
 
 //        // Postazione Openspace
 //        Postazione postazione = new Postazione();
@@ -60,19 +68,15 @@ public class PrenotazioneRunner implements CommandLineRunner {
 //        // Postazione Privata
 //
 //        Postazione postazionePrivata = new Postazione();
-//        postazionePrivata.setCodiceUnivoco("PSP111-222");
+//        postazionePrivata.setCodiceUnivoco("PSP999-000");
 //        postazionePrivata.setDescrizione("Postazione in ufficio privato");
 //        postazionePrivata.setTipoPostazione(TipoPostazione.PRIVATO);
 //        postazionePrivata.setNumeroMassimoOccupanti(1);
 //        postazionePrivata.setEdificio(savedEdificio);
 //        postazioneService.save(postazionePrivata);
-//
-//        Postazione savedPostazione1 = postazioneService.save(postazionePrivata);
-//
-//        if (savedPostazione1 != null) {
-//            System.out.println("Nuova postazione salvata correttamente: " +
-//                    savedPostazione.getCodiceUnivoco());
-//        }
+
+//        postazioneService.save(postazionePrivata);
+
 //
 //        // Postazione sala riunioni
 //        Postazione postazioneSalaRiunioni = new Postazione();
@@ -84,26 +88,18 @@ public class PrenotazioneRunner implements CommandLineRunner {
 //        postazioneService.save(postazioneSalaRiunioni);
 
 
-//        // -----------UTENTE----------------------
-//        Utente utente = new Utente();
-//        utente.setUsername("MrDoris");
-//        utente.setNomeCompleto("Ennio Doris");
-//        utente.setEmail("ennio.doris@example.com");
-//        utenteService.save(utente);
-        // ho creato anche il mio utente Pietro
-
-
+        // Recupero info dal db per le Verifiche
 
         System.out.println("\n==== UTENTI ===");
 
-        Utente utente1 = utenteService.findByUsername("MrDoris");
-        System.out.println("Utente trovato con nome: " + utente1);
+        Utente utente = utenteService.findByUsername("MrDoris");
+        System.out.println("Utente trovato con nome: " + utente);
 
         Utente utente2 = utenteService.findByUsername("PietroRo");
         System.out.println("Utente trovato con nome: " + utente2);
 
 
-        System.out.println("\n==== POSTAZIONE ===");
+        System.out.println("\n==== POSTAZIONE (private) ===");
 
 
         List<Postazione> postazioniPrivate = postazioneService.findByTipoAndCitta(TipoPostazione.PRIVATO, "Assago");
@@ -115,6 +111,40 @@ public class PrenotazioneRunner implements CommandLineRunner {
                         "| Descrizione: " + postazione.getDescrizione() +
                         "| Numero massimo occupanti: " + postazione.getNumeroMassimoOccupanti());
             });
+        }
+
+
+
+        System.out.println("\n==== PRENOTAZIONE 1  ===");
+
+        Postazione postazionePrivata = postazioniPrivate.get(0);
+        System.out.println("Postazione trovata con Cod.Univoco: " + postazionePrivata.getCodiceUnivoco());
+
+        Prenotazione prenotazione1 = new Prenotazione();
+        prenotazione1.setUtente(utente2);
+        prenotazione1.setPostazione(postazionePrivata);
+        prenotazione1.setDataPrenotazione(LocalDate.now());
+        prenotazione1.setPrenotazioneLibera(true);
+        try {
+            prenotazioneService.save(prenotazione1);
+            System.out.println("Prenotazione salvata correttamente per l'utente: " + utente2.getUsername());
+        } catch (IllegalStateException e) {
+            System.out.println("Errore durante il salvataggio della prenotazione: " + e.getMessage());
+        }
+
+        // Seconda prenotazione nello stesso giorno per lo stesso utente per verificare il controllo
+
+        Prenotazione prenotazione2 = new Prenotazione();
+        prenotazione2.setUtente(utente2);
+        prenotazione2.setPostazione(postazionePrivata);
+        prenotazione2.setDataPrenotazione(LocalDate.now());
+        prenotazione2.setPrenotazioneLibera(true);
+
+        try {
+            prenotazioneService.save(prenotazione2);
+            System.out.println("Prenotazione salvata correttamente per l'utente: " + utente2.getUsername());
+        } catch (IllegalStateException e) {
+            System.out.println("Errore durante il salvataggio della seconda prenotazione: " + e.getMessage() + " da parte dell'utente: " + utente2.getUsername());
         }
 
     }
