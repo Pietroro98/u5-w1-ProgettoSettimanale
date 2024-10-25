@@ -4,8 +4,8 @@ import PietroRomano.u5d5.Enum.TipoPostazione;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
 @Getter
+@Entity
 @Setter
 @NoArgsConstructor
 public class Postazione {
@@ -18,6 +18,7 @@ public class Postazione {
     private String codiceUnivoco;
 
     private String descrizione;
+
 
     @Enumerated(EnumType.STRING)
     private TipoPostazione tipoPostazione;
@@ -37,6 +38,7 @@ public class Postazione {
         this.numeroMassimoOccupanti = numeroMassimoOccupanti;
         this.edificio = edificio;
     }
+
 
     @Override
     public String toString() {

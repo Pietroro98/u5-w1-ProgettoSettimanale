@@ -5,6 +5,8 @@ import PietroRomano.u5d5.entites.Prenotazione;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
 @Service
 public class PrenotazioneService {
 
@@ -14,5 +16,4 @@ public class PrenotazioneService {
     public Prenotazione save(Prenotazione prenotazione){
         return prenotazioneRepository.save(prenotazione);
     }
-
 }
