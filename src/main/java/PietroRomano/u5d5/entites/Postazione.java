@@ -22,12 +22,20 @@ public class Postazione {
     @Enumerated(EnumType.STRING)
     private TipoPostazione tipoPostazione;
 
+    private int numeroMassimoOccupanti;
 
-    public Postazione(long id, String codiceUnivoco, String descrizione, TipoPostazione tipoPostazione) {
+    @ManyToOne
+    @JoinColumn(name = "edificio_id")
+    private Edificio edificio;
+
+
+    public Postazione(long id, String codiceUnivoco, String descrizione, TipoPostazione tipoPostazione, int numeroMassimoOccupanti, Edificio edificio) {
         this.id = id;
         this.codiceUnivoco = codiceUnivoco;
         this.descrizione = descrizione;
         this.tipoPostazione = tipoPostazione;
+        this.numeroMassimoOccupanti = numeroMassimoOccupanti;
+        this.edificio = edificio;
     }
 
     @Override
@@ -37,6 +45,8 @@ public class Postazione {
                 ", codiceUnivoco='" + codiceUnivoco + '\'' +
                 ", descrizione='" + descrizione + '\'' +
                 ", tipoPostazione=" + tipoPostazione +
+                ", numeroMassimoOccupanti=" + numeroMassimoOccupanti +
+                ", edificio=" + edificio +
                 '}';
     }
 }
